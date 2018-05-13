@@ -1,25 +1,32 @@
 package com.example.websocketdemo.config;
-
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.socket.config.annotation.*;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
+import org.springframework.web.socket.config.annotation.*;
+
 
 @Configuration
 @EnableWebSocketMessageBroker
-public class WebSocketConfig implements WebSocketConfigurer {
+public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
-	@Override
-	public void registerWebSocketHandlers(WebSocketHandlerRegistry arg0) {
-		// TODO Auto-generated method stub
+    @Override
+    public void registerStompEndpoints(StompEndpointRegistry registry) {
+        registry.addEndpoint("/ws").withSockJS();
+    }
 
-	}
+    @Override
+    public void configureMessageBroker(MessageBrokerRegistry registry) {
+        registry.setApplicationDestinationPrefixes("/app");
+        registry.enableSimpleBroker("/topic");   // Enables a simple in-memory broker
 
-	public void registerStompEndPoints(StompEndpointRegistry registry) {
-		registry.addEndpoint("/ws").withSockJS();
-	}
 
-	public void configureMessageBroker(MessageBrokerRegistry registry) {
-		registry.setApplicationDestinationPrefixes("/app");
-		registry.enableSimpleBroker("/topic");
-	}
+        //   Use this for enabling a Full featured broker like RabbitMQ
+
+        
+//        registry.enableStompBrokerRelay("/topic")
+//                .setRelayHost("localhost")
+//                .setRelayPort(8080)
+//                .setClientLogin("guest")
+//                .setClientPasscode("guest");
+        
+    }
 }
